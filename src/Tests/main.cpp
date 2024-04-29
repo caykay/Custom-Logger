@@ -1,13 +1,13 @@
-#include <Logger.h>
+#include <LogManager.h>
 
 #include <iostream>
 
 int main(int argc, char *argv[])
 {
-  std::cout << "Hello World" << std::endl;
   // CKLogger::Test();
   // test basic console logger
-  auto logger = CKLogger::ILogger();
-  logger.Log(CKLogger::Level::INFO, "Basic Configurator works as expected");
+  auto logger =
+      CKLogger::LogManager::GetInstance("/config/file.log.xml").GetRootLogger();
+  logger->Log(CKLogger::Level::INFO, "Basic Configurator works as expected");
   return 0;
 }

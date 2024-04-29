@@ -1,14 +1,12 @@
 #pragma once
 
-#include <filesystem>
+#include <memory>
 #include <string>
 
 namespace log4cxx
 {
 class Logger;
 }
-
-using FilePath = std::filesystem::path;
 
 namespace CKLogger
 {
@@ -23,23 +21,24 @@ enum class Level
   FATAL
 };
 
-void Test();
+class LogManager;
 
-class ILogger
+class Logger
 {
+  // Only the LogManager can call a Logger Constructor
+  friend class LogManager;
+
+ protected:
+  Logger(std::shared_ptr<log4cxx::Logger>);
+
  public:
-  ILogger();
-  ILogger(const FilePath &configFilePath);
+  using LoggerPtr = std::shared_ptr<Logger>;
 
   bool Log(Level level, const std::string &message) const;
-  // Sets the max log level for this logger
-  void SetLevel(Level level);
-  void SetPatternLayout(const std::string &patternLayout);
 
  private:
-  bool ConfigureLogger(const FilePath &filePath);
-
   std::shared_ptr<log4cxx::Logger> m_logger;
+
   bool m_usingBasicConfig = false;
 };
 }  // namespace CKLogger
