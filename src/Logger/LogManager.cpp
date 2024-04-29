@@ -19,7 +19,10 @@ namespace CKLogger
 {
 using Log4cxxLogManager = log4cxx::LogManager;
 
+// define static variables
 LogManager::LogManagerPtr LogManager::m_instance = nullptr;
+LogManager::LoggerMap LogManager::m_loggerMap;
+Logger::LoggerPtr LogManager::m_rootLogger = nullptr;
 
 LogManager::LogManager(const std::string &config)
 {
@@ -59,6 +62,10 @@ LogManager::LogManagerRef LogManager::GetInstance(const std::string &config)
 
 Logger::LoggerPtr LogManager::GetRootLogger() const
 {
+  if (m_rootLogger.get())
+  {
+    return m_rootLogger;
+  }
   return std::shared_ptr<Logger>(
       new Logger(Log4cxxLogManager::getRootLogger()));
 }
@@ -72,7 +79,12 @@ Logger::LoggerPtr LogManager::GetLogger(const std::string &name) const
     os << name;
     throw log4cxx::helpers::IllegalArgumentException(os.str());
   }
-  return std::shared_ptr<Logger>(
-      new Logger(Log4cxxLogManager::getLogger(name)));
+
+  if (m_loggerMap.count(name) == 0)
+  {
+    m_loggerMap.insert({name, std::shared_ptr<Logger>(new Logger(
+                                  Log4cxxLogManager::getLogger(name)))});
+  }
+  return m_loggerMap.find(name)->second;
 }
 }  // namespace CKLogger

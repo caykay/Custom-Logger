@@ -2,7 +2,6 @@
 
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/logger.h>
-#include <mach-o/dyld.h>
 
 #include <iostream>
 

@@ -38,9 +38,8 @@ class LogManager
   void operator=(LogManager &);
 
   static LogManagerPtr m_instance;
-
   // loggers
-  Logger::LoggerPtr rootLogger;
-  LoggerMap loggers;
+  static Logger::LoggerPtr m_rootLogger;
+  static LoggerMap m_loggerMap;
 };
 }  // namespace CKLogger
